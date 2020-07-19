@@ -1,6 +1,19 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const Post = require('./models/post');
 
+const databaseUrl = "mongodb+srv://dzhang40:Beckham,0701@cluster0.nplgh.mongodb.net/dzhang40?retryWrites=true&w=majority";
+
+mongoose.connect(databaseUrl,{
+	useNewUrlParser: true,
+	useCreateIndex: true,
+	useUnifiedTopology: true
+}).then(()=> {
+	console.log("Connected to DB!");
+}).catch(err => {
+	console.log("ERROR: ", err.message);
+});
 
 const app = express();
 app.use(bodyParser.json());
@@ -13,8 +26,11 @@ app.use((req, res, next) => {
 });
 
 app.post('/new', (req, res, next) => {
-  const post = req.body;
-  console.log(post);
+  const post = new Post({
+    title: req.body.title,
+    content: req.body.content
+  });
+  post.save();
   res.status(201).json({
     message: 'Post added successfully!'
   });
@@ -22,21 +38,11 @@ app.post('/new', (req, res, next) => {
 
 
 app.get('/new',(req, res, next) => {
-  const posts = [
-    {
-      id: 'dsadasfcxv211',
-      title: 'First server-side post',
-      content: 'This is coming from the server'
-    },
-    {
-      id: 'dszxvcx21312casd',
-      title: 'Second server-side post',
-      content: 'This is coming from the server!!!'
-    }
-  ];
-  res.status(200).json({
-    message: 'Posts fetched successfully',
-    posts: posts
+  Post.find().then(docs => {
+    res.status(200).json({
+      message: 'Posts fetched successfully',
+      posts: docs
+    });
   });
 });
 
