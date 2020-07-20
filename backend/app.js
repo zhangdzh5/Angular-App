@@ -30,9 +30,11 @@ app.post('/post', (req, res, next) => {
     title: req.body.title,
     content: req.body.content
   });
-  post.save();
-  res.status(201).json({
-    message: 'Post added successfully!'
+  post.save().then(createdPost => {
+    res.status(201).json({
+      message: 'Post added successfully!',
+      postId: createdPost._id
+    });
   });
 });
 
@@ -48,7 +50,7 @@ app.get('/post',(req, res, next) => {
 
 app.delete('/post/:id', (req, res, next) => {
   Post.findByIdAndDelete(req.params.id).then(result => {
-    console.log(result);
+    console.log("Post deleted!");
     res.status(200).json({ message: "Post deleted!" });
   });
 });
