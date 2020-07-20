@@ -25,7 +25,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.post('/new', (req, res, next) => {
+app.post('/post', (req, res, next) => {
   const post = new Post({
     title: req.body.title,
     content: req.body.content
@@ -37,12 +37,19 @@ app.post('/new', (req, res, next) => {
 });
 
 
-app.get('/new',(req, res, next) => {
+app.get('/post',(req, res, next) => {
   Post.find().then(docs => {
     res.status(200).json({
       message: 'Posts fetched successfully',
       posts: docs
     });
+  });
+});
+
+app.delete('/post/:id', (req, res, next) => {
+  Post.findByIdAndDelete(req.params.id).then(result => {
+    console.log(result);
+    res.status(200).json({ message: "Post deleted!" });
   });
 });
 
