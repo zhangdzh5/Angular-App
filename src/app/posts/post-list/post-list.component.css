@@ -6,3 +6,7 @@
 #Nopost {
   text-align: center;
 }
+
+mat-spinner {
+  margin: auto;
+}
